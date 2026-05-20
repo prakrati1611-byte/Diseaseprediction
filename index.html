@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nova Health is a clinical-grade offline disease prediction dashboard using client-side Bernoulli Naive Bayes, CART Decision Tree, and L2 Logistic Regression.">
+    <title>Nova Health | Advanced AI Disease Prediction & Diagnostics</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Main Style Sheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- App Background Glow Effects -->
+    <div class="glow-bg glow-1"></div>
+    <div class="glow-bg glow-2"></div>
+
+    <div class="app-wrapper">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <div class="logo-icon medical-logo">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div class="logo-text">
+                    <h1>Nova<span>Health</span></h1>
+                    <p>Clinical ML Diagnostics</p>
+                </div>
+            </div>
+            <nav class="main-nav">
+                <button class="nav-link active" data-page="diagnostics-page">
+                    <i class="fa-solid fa-stethoscope"></i> AI Diagnostics
+                </button>
+                <button class="nav-link" data-page="nova-ai-page">
+                    <i class="fa-solid fa-robot"></i> Nova AI
+                </button>
+                <button class="nav-link" data-page="library-page">
+                    <i class="fa-solid fa-book-medical"></i> Medical Library
+                </button>
+                <button class="nav-link" data-page="about-page">
+                    <i class="fa-solid fa-circle-info"></i> About Nova Health
+                </button>
+            </nav>
+            <div class="header-meta">
+                <span class="badge privacy-badge"><i class="fa-solid fa-shield-halved"></i> 100% Secure & Offline</span>
+            </div>
+        </header>
+
+        <!-- Main Application Pages -->
+        <!-- Page 1: AI Diagnostics Dashboard -->
+        <div class="page-container active" id="diagnostics-page">
+            <div class="dashboard-workspace">
+                
+                <!-- Left Column: Symptom Input Interface -->
+                <div class="workspace-main-panel">
+                    <section class="panel symptom-input-panel">
+                        <div class="panel-header">
+                            <h2><i class="fa-solid fa-clipboard-question"></i> Symptom Selection</h2>
+                            <p>Identify symptoms using search, the interactive anatomy map, or browse categories.</p>
+                        </div>
+                        
+                        <!-- Search & Autocomplete -->
+                        <div class="search-container">
+                            <div class="search-input-wrapper">
+                                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                                <input type="text" id="symptom-search" placeholder="Type to search symptoms (e.g. fever, headache)..." autocomplete="off">
+                                <button class="clear-search-btn" id="clear-search" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                            <!-- Autocomplete Dropdown List -->
+                            <div class="autocomplete-dropdown" id="autocomplete-list" style="display: none;"></div>
+                        </div>
+
+                        <!-- Dual Tab Input: Anatomy Map & Categorized List -->
+                        <div class="input-tabs">
+                            <button class="tab-btn active" data-tab="body-map-tab">
+                                <i class="fa-solid fa-person"></i> Anatomy Map
+                            </button>
+                            <button class="tab-btn" data-tab="categories-tab">
+                                <i class="fa-solid fa-list-check"></i> Browse Categories
+                            </button>
+                        </div>
+
+                        <div class="tab-content-container">
+                            <!-- Tab A: Body Map -->
+                            <div class="tab-content active" id="body-map-tab">
+                                <div class="body-map-layout">
+                                    <div class="svg-container">
+                                        <!-- Human Body Silhouette SVG -->
+                                        <svg viewBox="0 0 200 420" class="human-silhouette" id="body-silhouette-svg">
+                                            <defs>
+                                                <linearGradient id="body-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                                    <stop offset="0%" stop-color="var(--bg-card-light)" />
+                                                    <stop offset="100%" stop-color="var(--bg-card)" />
+                                                </linearGradient>
+                                                <filter id="glow-effect" x="-20%" y="-20%" width="140%" height="140%">
+                                                    <feGaussianBlur stdDeviation="5" result="blur" />
+                                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                                </filter>
+                                            </defs>
+                                            
+                                            <rect width="200" height="420" fill="transparent" />
+                                            <path d="M100,20 C115,20 122,35 122,46 C122,58 116,68 112,72 C108,76 106,78 106,83 C116,84 130,86 142,94 C154,102 165,116 170,138 C173,150 171,164 167,178 C163,192 155,200 152,204 C148,208 143,205 141,198 C139,190 142,168 142,156 C142,144 135,115 130,114 C128,114 125,124 125,142 C125,170 128,206 127,222 C126,238 128,248 128,252 L128,328 C128,358 135,385 135,395 C135,405 125,408 118,408 C110,408 108,398 106,370 C104,342 101,310 100,310 C99,310 96,342 94,370 C92,398 90,408 82,408 C75,408 65,405 65,395 C65,385 72,358 72,328 L72,252 C72,248 74,238 73,222 C72,206 75,170 75,142 C75,124 72,114 70,114 C65,115 58,144 58,156 C58,168 61,190 59,198 C57,205 52,208 48,204 C45,200 37,192 33,178 C29,164 27,150 30,138 C35,116 46,102 58,94 C70,86 84,84 94,83 C94,78 92,76 88,72 C84,68 78,58 78,46 C78,35 85,20 100,20 Z" class="body-outline-bg" />
+                                            
+                                            <!-- Interactive Regions -->
+                                            <path d="M100,20 C115,20 122,35 122,46 C122,58 116,68 112,72 C108,76 106,78 106,83 L94,83 C94,78 92,76 88,72 C84,68 78,58 78,46 C78,35 85,20 100,20 Z" class="interactive-region" data-region="head" />
+                                            <path d="M94,83 C100,84 100,84 106,83 C116,84 130,86 142,94 C149,99 154,106 157,114 L127,114 C123,114 122,118 122,126 L123,142 L77,142 L78,126 C78,118 77,114 73,114 L43,114 C46,106 51,99 58,94 C70,86 84,84 94,83 Z" class="interactive-region" data-region="chest" />
+                                            <path d="M77,142 L123,142 L124,195 L76,195 Z" class="interactive-region" data-region="abdomen" />
+                                            <path d="M76,195 L124,195 C124,215 127,222 127,225 L73,225 C73,222 76,215 76,195 Z" class="interactive-region" data-region="urinary" />
+                                            <!-- Arms & Legs Joints -->
+                                            <path d="M43,114 L73,114 C75,114 75,124 75,142 C75,170 72,185 71,195 C70,201 68,203 66,203 C64,203 61,195 59,190 C58,185 58,168 58,156 C58,144 51,126 43,114 Z" class="interactive-region" data-region="joints" />
+                                            <path d="M157,114 L127,114 C125,114 125,124 125,142 C125,170 128,185 129,195 C130,201 132,203 134,203 C136,203 139,195 141,190 C142,185 142,168 142,156 C142,144 149,126 157,114 Z" class="interactive-region" data-region="joints" />
+                                            <path d="M73,225 L100,225 L100,285 L95,355 L82,408 C75,408 65,405 65,395 C65,385 72,358 72,328 L72,252 C72,248 74,238 73,225 Z" class="interactive-region" data-region="joints" />
+                                            <path d="M100,225 L127,225 C126,238 128,248 128,252 L128,328 C128,358 135,385 135,395 C135,405 125,408 118,408 L105,355 L100,285 Z" class="interactive-region" data-region="joints" />
+                                            
+                                            <!-- Nodes -->
+                                            <circle cx="100" cy="46" r="4" class="region-node" />
+                                            <circle cx="100" cy="113" r="4" class="region-node" />
+                                            <circle cx="100" cy="168" r="4" class="region-node" />
+                                            <circle cx="100" cy="210" r="4" class="region-node" />
+                                            <circle cx="73" cy="225" r="4" class="region-node" />
+                                            <circle cx="127" cy="225" r="4" class="region-node" />
+                                            <circle cx="83" cy="328" r="4" class="region-node" />
+                                            <circle cx="117" cy="328" r="4" class="region-node" />
+                                        </svg>
+                                    </div>
+                                    <div class="map-controls">
+                                        <div class="active-region-label">
+                                            <span>Anatomical Filter</span>
+                                            <h3 id="current-region-name">Whole Body</h3>
+                                        </div>
+                                        <p class="region-tip">Click a highlighted zone on the mannequin to view symptoms specific to that body region.</p>
+                                        <button class="secondary-btn" id="reset-region-filter"><i class="fa-solid fa-arrows-spin"></i> Reset Filter</button>
+                                        
+                                        <div class="quick-links" id="region-quick-links">
+                                            <button class="region-quick-btn active" data-region="all">All</button>
+                                            <button class="region-quick-btn" data-region="head">Head</button>
+                                            <button class="region-quick-btn" data-region="chest">Chest</button>
+                                            <button class="region-quick-btn" data-region="abdomen">Abdomen</button>
+                                            <button class="region-quick-btn" data-region="urinary">Urinary</button>
+                                            <button class="region-quick-btn" data-region="joints">Joints</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="region-symptom-selector">
+                                    <h4 class="sub-label">Region Symptoms (Click to Add):</h4>
+                                    <div class="symptom-grid" id="region-symptoms-list">
+                                        <!-- Dynamic region symptoms list -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Tab B: Categorized Lists -->
+                            <div class="tab-content" id="categories-tab">
+                                <div class="accordion-container" id="category-accordion">
+                                    <!-- Dynamic categories list -->
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+                
+                <!-- Right Column: Selected symptoms and prediction dashboard -->
+                <div class="workspace-side-panel">
+                    
+                    <!-- Selected Symptoms Pill Box -->
+                    <div class="panel selected-symptoms-panel">
+                        <div class="panel-header">
+                            <h3><i class="fa-solid fa-stethoscope"></i> Selected Symptoms (<strong id="selected-count">0</strong>)</h3>
+                            <button class="text-btn clear-symptoms-btn" id="clear-all-symptoms"><i class="fa-solid fa-trash-can"></i> Clear All</button>
+                        </div>
+                        <div class="symptoms-pill-container" id="selected-pills">
+                            <div class="no-symptoms-placeholder">No symptoms selected yet. Use search, categories, or the body map.</div>
+                        </div>
+                    </div>
+
+                    <!-- Prediction Results Panel Container -->
+                    <section class="panel diagnostic-panel" id="diagnostics-dashboard">
+                        
+                        <!-- STATE 1: Empty / Waiting State -->
+                        <div class="diagnostic-state active-state" id="state-waiting">
+                            <div class="state-graphic">
+                                <i class="fa-solid fa-heart-pulse brain-pulse"></i>
+                                <div class="scanner-circle"></div>
+                            </div>
+                            <h3>Diagnostic Engine Idle</h3>
+                            <p>Please select **3 or more symptoms** to calibrate Nova Health's diagnostic algorithms and generate a prediction report.</p>
+                            <div class="metric-meter-preview">
+                                <div class="meter-bar-container">
+                                    <div class="meter-bar-fill" id="waiting-progress-fill" style="width: 0%;"></div>
+                                </div>
+                                <span class="meter-text" id="waiting-progress-text">0 / 3 symptoms selected</span>
+                            </div>
+                        </div>
+
+                        <!-- STATE 2: Loading / Analyzing Scanner State -->
+                        <div class="diagnostic-state" id="state-loading" style="display: none;">
+                            <div class="radar-scanner">
+                                <div class="scan-beam"></div>
+                                <div class="scan-grids"></div>
+                                <i class="fa-solid fa-user-doctor doctor-scan-icon"></i>
+                            </div>
+                            <h3>Running Diagnostics...</h3>
+                            <p class="scanning-detail" id="scanning-detail-text">Initializing clinical models...</p>
+                            
+                            <div class="model-scan-stages">
+                                <div class="stage-item" id="stage-nb"><i class="fa-solid fa-circle-notch fa-spin"></i> Bernoulli Naive Bayes Model</div>
+                                <div class="stage-item" id="stage-dt"><i class="fa-solid fa-circle-notch fa-spin"></i> CART Decision Tree Pathing</div>
+                                <div class="stage-item" id="stage-lr"><i class="fa-solid fa-circle-notch fa-spin"></i> L2 Regularized Logistic Regression</div>
+                            </div>
+                        </div>
+
+                        <!-- STATE 3: Complete / Diagnosis Report -->
+                        <div class="diagnostic-state" id="state-results" style="display: none;">
+                            
+                            <!-- Report Header -->
+                            <div class="report-header">
+                                <div>
+                                    <span class="report-tag"><i class="fa-solid fa-file-medical"></i> CLINICAL PREDICTIONS REPORT</span>
+                                    <h2>Diagnostic Analysis</h2>
+                                </div>
+                                <button class="icon-btn" id="print-report" title="Print Analysis Report"><i class="fa-solid fa-print"></i></button>
+                            </div>
+
+                            <!-- Top Disease Primary Card -->
+                            <div class="primary-diagnosis-card">
+                                <div class="card-glow"></div>
+                                <div class="primary-diagnosis-header">
+                                    <div>
+                                        <span class="badge primary-badge-label">Primary Suspected Condition</span>
+                                        <h3 id="primary-disease-name">Tuberculosis</h3>
+                                    </div>
+                                    <div class="confidence-badge">
+                                        <span class="confidence-label">Confidence</span>
+                                        <span class="confidence-value" id="primary-confidence-pct">98.4%</span>
+                                    </div>
+                                </div>
+                                
+                                <p class="disease-description" id="primary-disease-description">
+                                    A serious infectious bacterial disease that primarily affects the lungs, causing chronic cough with blood, fever, night sweats, and weight loss.
+                                </p>
+                                
+                                <div class="specialist-box">
+                                    <i class="fa-solid fa-user-md doctor-box-icon"></i>
+                                    <div>
+                                        <span class="spec-label">Recommended Medical Specialist:</span>
+                                        <strong class="spec-value" id="primary-specialist">Pulmonologist / Infectious Disease</strong>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Precautions / Action Items Grid -->
+                            <div class="precautions-section">
+                                <h4><i class="fa-solid fa-shield-halved"></i> Recommended Precautions & Action Steps</h4>
+                                <div class="precautions-grid" id="primary-precautions-list">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Alternative suspected conditions list -->
+                            <div class="alternatives-section">
+                                <h4><i class="fa-solid fa-circle-nodes"></i> Alternative Differential Diagnoses</h4>
+                                <div class="alternatives-list" id="alternative-diagnoses-list">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- ML Model Consensus comparison panel -->
+                            <div class="consensus-section">
+                                <h4><i class="fa-solid fa-network-wired"></i> Machine Learning Consensus Breakdown</h4>
+                                <div class="consensus-grid">
+                                    <!-- Naive Bayes Card -->
+                                    <div class="model-consensus-card">
+                                        <div class="model-card-header">
+                                            <span>Bernoulli Naive Bayes</span>
+                                            <i class="fa-solid fa-chart-bar model-icon nb-icon"></i>
+                                        </div>
+                                        <div class="model-prediction-result">
+                                            <strong class="predicted-name" id="consensus-nb-name">Jaundice</strong>
+                                            <div class="consensus-bar">
+                                                <div class="consensus-bar-fill nb-fill" id="consensus-nb-fill" style="width: 80%;"></div>
+                                            </div>
+                                            <span class="consensus-pct" id="consensus-nb-pct">80% Prob</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Decision Tree Card -->
+                                    <div class="model-consensus-card">
+                                        <div class="model-card-header">
+                                            <span>CART Decision Tree</span>
+                                            <i class="fa-solid fa-diagram-project model-icon dt-icon"></i>
+                                        </div>
+                                        <div class="model-prediction-result">
+                                            <strong class="predicted-name" id="consensus-dt-name">Jaundice</strong>
+                                            <div class="consensus-bar">
+                                                <div class="consensus-bar-fill dt-fill" id="consensus-dt-fill" style="width: 100%;"></div>
+                                            </div>
+                                            <span class="consensus-pct" id="consensus-dt-pct">100% Prob</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Logistic Regression Card -->
+                                    <div class="model-consensus-card">
+                                        <div class="model-card-header">
+                                            <span>Logistic Regression</span>
+                                            <i class="fa-solid fa-calculator model-icon lr-icon"></i>
+                                        </div>
+                                        <div class="model-prediction-result">
+                                            <strong class="predicted-name" id="consensus-lr-name">Jaundice</strong>
+                                            <div class="consensus-bar">
+                                                <div class="consensus-bar-fill lr-fill" id="consensus-lr-fill" style="width: 95%;"></div>
+                                            </div>
+                                            <span class="consensus-pct" id="consensus-lr-pct">95% Prob</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Symptom Correlation Panel -->
+                            <div class="correlation-section">
+                                <h4><i class="fa-solid fa-brain"></i> Feature Correlation & Contribution</h4>
+                                <p class="correlation-tip">The following selected symptoms contributed most to this prediction based on conditional probabilities:</p>
+                                <div class="correlation-chart-container" id="correlation-bars">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+
+                            <!-- Disclaimer panel -->
+                            <div class="disclaimer-card">
+                                <i class="fa-solid fa-triangle-exclamation disclaimer-icon"></i>
+                                <div class="disclaimer-text">
+                                    <strong>CLINICAL DISCLAIMER:</strong> This tool is an AI diagnostic engine built using machine learning classification models. It is intended for informational and educational purposes only. It is **NOT** a substitute for professional medical advice, diagnosis, or treatment. Always consult a qualified healthcare provider for any medical concerns. If you are experiencing a medical emergency, please call your local emergency number immediately.
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Page 2: Medical Library -->
+        <!-- Page: Nova AI Assistant -->
+        <div class="page-container" id="nova-ai-page" style="display: none;">
+            <section class="panel nova-ai-panel">
+                <div class="nova-ai-grid">
+                    <!-- Chat Panel -->
+                    <div class="chat-panel panel">
+                        <div class="panel-header">
+                            <h2><i class="fa-solid fa-robot"></i> Nova AI Assistant</h2>
+                            <p>Ask questions about symptoms, precautions, and specialists.</p>
+                        </div>
+
+                        <div id="nova-ai-chat-history" class="chat-history">
+                            <div class="chat-message assistant">
+                                <div class="message-avatar">
+                                    <i class="fa-solid fa-user-doctor"></i>
+                                </div>
+                                <div class="message-bubble">
+                                    <p>Hello! I am your <strong>Nova AI Health Assistant</strong>. You can ask me questions about diseases, describe your symptoms for a real-time risk assessment, or inquire about precautions and specialists.</p>
+                                    <p>How can I help you today?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-wrapper">
+                            <input id="nova-ai-chat-input" placeholder="Describe symptoms or ask a question..." autocomplete="off">
+                            <button id="nova-ai-chat-send" class="secondary-btn">Send</button>
+                        </div>
+                    </div>
+
+                    <!-- Co-pilot / Prediction Panel -->
+                    <div class="copilot-panel panel">
+                        <div class="panel-header">
+                            <h3><i class="fa-solid fa-stethoscope"></i> Co-Pilot</h3>
+                            <p>Symptom extraction and quick prediction preview.</p>
+                        </div>
+
+                        <div id="copilot-extracted-symptoms" class="copilot-symptoms">
+                            <div class="no-symptoms-placeholder">No symptoms extracted from chat yet.</div>
+                        </div>
+
+                        <div id="copilot-waiting-card" class="copilot-waiting">
+                            <p class="no-symptoms-placeholder">Ask the assistant or paste symptoms to begin analysis.</p>
+                        </div>
+
+                        <div id="copilot-prediction-results" class="copilot-results" style="display: none;">
+                            <div class="copilot-result-header">
+                                <h4 id="copilot-disease-name">Condition</h4>
+                                <div class="copilot-confidence"><span id="copilot-confidence">0</span>%</div>
+                            </div>
+                            <div class="copilot-specialist">Recommended: <strong id="copilot-specialist">General Physician</strong></div>
+
+                            <div class="copilot-actions">
+                                <button id="copilot-apply-btn" class="secondary-btn">Apply to Dashboard</button>
+                                <button id="copilot-clear-btn" class="text-btn">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div class="page-container" id="library-page" style="display: none;">
+            <section class="panel library-panel">
+                <div class="library-header">
+                    <div class="panel-header">
+                        <h2><i class="fa-solid fa-book-medical"></i> Medical Reference Library</h2>
+                        <p>Browse detailed clinical profiles, precautions, and symptom lists for all 41 diseases.</p>
+                    </div>
+                    <div class="library-search-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="library-search" placeholder="Search diseases by name or indicating symptoms (e.g. skin, fever)..." autocomplete="off">
+                    </div>
+                </div>
+                <div class="disease-cards-grid" id="disease-cards-container">
+                    <!-- Dynamic Disease Cards generated by JS -->
+                </div>
+            </section>
+        </div>
+
+                <!-- Page 3: About Nova Health -->
+        <div class="page-container" id="about-page" style="display: none;">
+            <section class="panel about-panel">
+                <div class="panel-header">
+                    <h2><i class="fa-solid fa-circle-info"></i> About Nova Health</h2>
+                    <p>Clinical decision screening prototype leveraging client-side machine learning and zero-network data isolation.</p>
+                </div>
+                
+                <div class="about-content">
+                    <div class="about-hero">
+                        <h1>Nova Health</h1>
+                        <p class="about-hero-sub">Nova Health is an interactive, browser-based clinical screening platform designed to assist users in understanding symptom correlations. By combining client-side machine learning execution with secure data isolation, we offer a fast, anonymous, and educational health monitoring workbench.</p>
+                    </div>
+
+                    <div class="about-grid">
+                        <div class="about-grid-card">
+                            <h3><i class="fa-solid fa-compass"></i> Project Objectives</h3>
+                            <p>To demonstrate the utility of lightweight machine learning classifiers executing in real-time within the web browser. Nova Health aims to promote health literacy and encourage early, structured discussions between patients and primary care physicians.</p>
+                        </div>
+                        
+                        <div class="about-grid-card">
+                            <h3><i class="fa-solid fa-shield-halved"></i> Data Confidentiality</h3>
+                            <p>We operate on a zero-trust model. Nova Health runs entirely within your browser's execution sandbox. No symptom data, search logs, or prediction outcomes are transmitted over the network or saved on external servers, ensuring 100% user confidentiality.</p>
+                        </div>
+                    </div>
+
+                    <div class="how-it-works-box">
+                        <h3><i class="fa-solid fa-gears"></i> Engine Workflow</h3>
+                        <p>Nova Health runs a multi-model consensus prediction pipeline. Once at least three symptoms are registered, three local classifiers evaluate the inputs in parallel:</p>
+                        
+                        <div class="workflow-diagram">
+                            <div class="workflow-step">User Selection</div>
+                            <div class="workflow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="workflow-step">Local Consensus Pipeline</div>
+                            <div class="workflow-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                            <div class="workflow-step">Statistical Correlation Report</div>
+                        </div>
+
+                        <ul class="workflow-list">
+                            <li><strong>Symptom Input:</strong> Symptoms are registered manually via the search bar or by selecting anatomical regions on the interactive SVG outline.</li>
+                            <li><strong>Parallel Execution:</strong> The selected binary feature vector is sent to three mathematical classification models running concurrently in JavaScript.</li>
+                            <li><strong>Consensus Aggregation:</strong> An ensemble aggregator displays individual model confidence scores and routes the user to relevant clinical specialties and precautions.</li>
+                        </ul>
+                    </div>
+
+                    <div class="features-table-wrapper">
+                        <h3><i class="fa-solid fa-star"></i> Core Features</h3>
+                        <table class="features-table">
+                            <thead>
+                                <tr>
+                                    <th>Feature Component</th>
+                                    <th>Mathematical Mechanism</th>
+                                    <th>User Value</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Consensus Classification</strong></td>
+                                    <td>Ensemble combining CART, Bayes, and regularized regression.</td>
+                                    <td>Reduces bias from individual classifier topologies.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Local Sandbox Sandboxing</strong></td>
+                                    <td>Executes pure client-side mathematical models locally.</td>
+                                    <td>Guarantees medical information never leaves the local machine.</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Anatomical Region Mapping</strong></td>
+                                    <td>Maps active SVG paths to categorical symptoms.</td>
+                                    <td>Provides a visual pathway for symptom registration.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="disclaimer-alert">
+                        <i class="fa-solid fa-triangle-exclamation disclaimer-alert-icon"></i>
+                        <div>
+                            <h4>⚠️ Medical Disclaimer & Guardrails</h4>
+                            <p><strong>Nova Health does not provide professional medical diagnoses.</strong> All calculations, outputs, and recommendations are based on statistical probability indices and are intended for informational/educational purposes only. This tool should not replace clinical evaluations from licensed doctors. Always consult a healthcare provider for any medical concerns or emergencies.</p>
+                        </div>
+                    </div>
+
+                    <!-- Technical Details Section -->
+                    <div class="algo-explanation-section">
+                        <h3><i class="fa-solid fa-square-root-variable"></i> Machine Learning Engine Architecture</h3>
+                        <div class="algo-cards-grid">
+                            <div class="algo-detail-card">
+                                <h4>Bernoulli Naive Bayes</h4>
+                                <p class="algo-equation">P(C|x) ∝ P(C) ∏ P(xᵢ|C)</p>
+                                <p>Evaluates joint conditional probabilities of independent symptom occurrences. Exceptionally reliable for sparse binary feature vectors.</p>
+                            </div>
+                            <div class="algo-detail-card">
+                                <h4>CART Decision Tree</h4>
+                                <p class="algo-equation">Gini = 1 - ∑ P(i)²</p>
+                                <p>Traverses hierarchical question nodes based on Gini impurity indices, tracing exact decision paths down to leaf probability maps.</p>
+                            </div>
+                            <div class="algo-detail-card">
+                                <h4>Logistic Regression</h4>
+                                <p class="algo-equation">Softmax(z) = eᶻ / ∑ eᶻ</p>
+                                <p>Fits linear decision hyperplanes with L2 regularization penalty, feeding scores into Softmax to yield fully calibrated likelihood bounds.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Disease Details Modal (Expanded View) -->
+        <div class="modal-overlay" id="disease-modal" style="display: none;">
+            <div class="modal-card">
+                <button class="modal-close-btn" id="close-modal" aria-label="Close details"><i class="fa-solid fa-xmark"></i></button>
+                <div class="modal-header">
+                    <span class="badge primary-badge-label" id="modal-specialist-badge">Cardiologist</span>
+                    <h2 id="modal-disease-name">Hypertension</h2>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-section">
+                        <h3>Clinical Description</h3>
+                        <p id="modal-disease-description">Clinical details go here...</p>
+                    </div>
+                    
+                    <div class="modal-split-grid">
+                        <div class="modal-section">
+                            <h3><i class="fa-solid fa-shield-halved"></i> Actionable Precautions</h3>
+                            <ul class="precautions-modal-list" id="modal-precautions-list">
+                                <!-- Populated dynamically -->
+                            </ul>
+                        </div>
+                        <div class="modal-section">
+                            <h3><i class="fa-solid fa-list-check"></i> Key Indicating Symptoms</h3>
+                            <div class="modal-symptoms-list" id="modal-symptoms-list">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 Nova Health Analytics. Built with advanced browser-based Bernoulli Naive Bayes, CART Decision Tree, and L2 Logistic Regression. All calculations are performed 100% locally for patient confidentiality.</p>
+        </footer>
+    </div>
+
+    <!-- JS Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>

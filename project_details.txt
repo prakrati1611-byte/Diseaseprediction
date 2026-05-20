@@ -1,0 +1,103 @@
+Project Summary: Machine Learning Clinical Diagnosis Assistant
+
+1. Project Overview
+-------------------
+This workspace implements a clinical symptom-to-disease prediction pipeline. The training and model export pipeline runs in Python with scikit-learn, while the prediction application is executed client-side in JavaScript using exported JSON model parameters.
+
+2. Tech Stack
+--------------
+- Python 3.x
+- pandas
+- numpy
+- scikit-learn
+- JavaScript (vanilla)
+- HTML/CSS
+- JSON for model export and browser inference
+
+3. Dataset Details
+-------------------
+- Training dataset: `Training.csv`
+- Testing dataset: `Testing.csv`
+- Training shape: 4920 rows, 134 columns
+- Testing shape: 42 rows, 133 columns
+- Feature count: 132 binary symptom features
+- Disease classes: 41 distinct prognosis labels
+- The project deduplicates and resplits data when exact overlap exists between training and testing sets to avoid data leakage.
+
+4. Models Created
+------------------
+The project trains and validates three classification models:
+- Bernoulli Naive Bayes
+  - `alpha=1.0`
+  - Uses binary symptom features
+- Decision Tree Classifier
+  - `max_depth=20`
+  - `min_samples_leaf=2`
+  - `random_state=42`
+- Logistic Regression
+  - `max_iter=1000`
+  - `C=0.1`
+  - `random_state=42`
+
+5. Training and Validation Workflow
+------------------------------------
+- Data is loaded and cleaned from `Training.csv` and `Testing.csv`.
+- Prognosis labels are stripped of whitespace and aligned.
+- Exact duplicates and overlaps between train/test sets are detected.
+- If overlap duplicates are found, the combined dataset is deduplicated and split again with `train_test_split(..., stratify=y_all, test_size=0.2, random_state=42)`.
+- 5-fold stratified cross-validation is performed for all models.
+
+6. Actual Model Performance
+----------------------------
+These results were obtained by running `python train_models.py`:
+- Bernoulli Naive Bayes test accuracy: 0.9672
+- Decision Tree test accuracy: 0.5246
+- Logistic Regression test accuracy: 0.9672
+
+Cross-validation results:
+- Bernoulli Naive Bayes CV accuracy: 0.9705 ± 0.0241
+- Decision Tree CV accuracy: 0.5016 ± 0.0396
+- Logistic Regression CV accuracy: 0.9738 ± 0.0197
+
+7. Model Export and Runtime Inference
+--------------------------------------
+- `train_models.py` exports model parameters to `model_data.json`.
+- Exported JSON includes:
+  - `features`: list of 132 symptom feature names
+  - `classes`: list of 41 disease class labels
+  - `naive_bayes`: class log priors, feature log probabilities, and feature probabilities
+  - `decision_tree`: serialized tree structure with node splits and leaf class probability distributions
+  - `logistic_regression`: coefficient matrix and intercept vector
+  - `metadata`: disease names, descriptions, specialists, and precautions
+- `app.js` loads `model_data.json` and performs inference locally in-browser.
+
+8. Browser-side Inference Logic
+-------------------------------
+- A binary symptom vector of length 132 is created from user-selected symptoms.
+- `evaluateNaiveBayes(x)` computes a log-probability score for each disease and applies softmax.
+- `evaluateDecisionTree(x)` traverses the serialized decision tree to a leaf probability distribution.
+- `evaluateLogisticRegression(x)` computes class linear scores using exported coefficients and softmaxes them.
+- Ensemble consensus is formed by averaging probabilities from all three models.
+
+9. Key Files
+-------------
+- `train_models.py`: main training, de-duplication, model export pipeline
+- `check_cv.py`: cross-validation and accuracy checking helper
+- `run_cv.py`: cross-validation comparison script for different models and regularization values
+- `verify_predictions.py`: verifies exported JSON model behavior against scikit-learn reference implementations
+- `app.js`: front-end model loading, inference, UI interaction, and consensus rendering
+- `index.html`: user interface for symptom selection, model consensus display, and medical guidance
+- `styles.css`: layout and visual styling
+- `model_data.json`: exported model parameters and disease metadata
+
+10. Usage Notes
+----------------
+- The front-end runs entirely in the browser with no server-side inference.
+- The project includes a clinical disclaimer indicating the system is for informational/educational use only and not a substitute for professional medical advice.
+- Because of strong overlap in the original training/test dataset, the training script rebuilds a safe stratified split before final evaluation.
+
+11. Observations
+-----------------
+- Naive Bayes and Logistic Regression have very similar and strong accuracy.
+- Decision Tree performs significantly worse, suggesting the data may be easier to model with linear/binary-probabilistic methods or that the tree is overfitting/underfitting.
+- The static JSON export approach allows portability of trained models into a pure browser application.
